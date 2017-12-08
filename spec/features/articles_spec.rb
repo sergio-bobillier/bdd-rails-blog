@@ -19,6 +19,22 @@ RSpec.feature 'Listing articles' do
   end
 end
 
+RSpec.feature 'Showing articles' do
+  before do
+    @article = Article.create(title: 'The first article', body: 'Body of the first article')
+  end
+
+  scenario 'A user clicks an article link' do
+    visit '/'
+
+    click_link @article.title
+
+    expect(page).to have_content(@article.title)
+    expect(page).to have_content(@article.body)
+    expect(current_path).to eq(article_path(@article))
+  end
+end
+
 RSpec.feature 'Creating Articles' do
   scenario 'A user creates a new article' do
     visit '/'
