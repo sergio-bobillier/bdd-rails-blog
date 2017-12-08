@@ -31,7 +31,7 @@ RSpec.feature 'Showing articles' do
 
     expect(page).to have_content(@article.title)
     expect(page).to have_content(@article.body)
-    expect(current_path).to eq(article_path(@article))
+    expect(page.current_path).to eq(article_path(@article))
   end
 end
 
