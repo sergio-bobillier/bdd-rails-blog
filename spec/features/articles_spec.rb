@@ -17,16 +17,19 @@ RSpec.feature 'Listing articles' do
 
     expect(page).to have_link(@article1.title)
     expect(page).to have_link(@article2.title)
+
+    expect(page).not_to have_link('New Article')
   end
 end
 
 RSpec.feature 'Showing articles' do
   before do
     @john = User.create!(email: 'john@example.com', password: 'password')
+    @fred = User.create!(email: 'fred@example.com', password: 'password')
     @article = Article.create(title: 'The first article', body: 'Body of the first article', user: @john)
   end
 
-  scenario 'A user clicks an article link' do
+  scenario 'A non signed-in user clicks an article link' do
     visit '/'
 
     click_link @article.title
@@ -34,6 +37,39 @@ RSpec.feature 'Showing articles' do
     expect(page).to have_content(@article.title)
     expect(page).to have_content(@article.body)
     expect(page.current_path).to eq(article_path(@article))
+
+    expect(page).not_to have_link('Edit Article')
+    expect(page).not_to have_link('Delete Article')
+  end
+
+  scenario "A signed-in user clicks another user's article link" do
+    login_as(@fred)
+
+    visit '/'
+
+    click_link @article.title
+
+    expect(page).to have_content(@article.title)
+    expect(page).to have_content(@article.body)
+    expect(page.current_path).to eq(article_path(@article))
+
+    expect(page).not_to have_link('Edit Article')
+    expect(page).not_to have_link('Delete Article')
+  end
+
+  scenario "A signed-in user clicks his/her own article link" do
+    login_as(@john)
+
+    visit '/'
+
+    click_link @article.title
+
+    expect(page).to have_content(@article.title)
+    expect(page).to have_content(@article.body)
+    expect(page.current_path).to eq(article_path(@article))
+
+    expect(page).to have_link('Edit Article')
+    expect(page).to have_link('Delete Article')
   end
 end
 
