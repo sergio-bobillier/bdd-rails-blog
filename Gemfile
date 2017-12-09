@@ -12,6 +12,8 @@ gem 'rails', '~> 5.1.4'
 gem 'bootstrap-sass'
 gem 'autoprefixer-rails'
 
+gem 'devise'
+
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 # Use Puma as the app server
