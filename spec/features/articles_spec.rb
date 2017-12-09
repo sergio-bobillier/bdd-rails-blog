@@ -2,8 +2,9 @@ require 'rails_helper'
 
 RSpec.feature 'Listing articles' do
   before do
-    @article1 = Article.create(title: 'The first article', body: 'Body of the first article')
-    @article2 = Article.create(title: 'The second article', body: 'Body of the second article')
+    @john = User.create!(email: 'john@example.com', password: 'password')
+    @article1 = Article.create(title: 'The first article', body: 'Body of the first article', user: @john)
+    @article2 = Article.create(title: 'The second article', body: 'Body of the second article', user: @john)
   end
 
   scenario 'A user lists the articles' do
@@ -21,7 +22,8 @@ end
 
 RSpec.feature 'Showing articles' do
   before do
-    @article = Article.create(title: 'The first article', body: 'Body of the first article')
+    @john = User.create!(email: 'john@example.com', password: 'password')
+    @article = Article.create(title: 'The first article', body: 'Body of the first article', user: @john)
   end
 
   scenario 'A user clicks an article link' do
@@ -36,6 +38,11 @@ RSpec.feature 'Showing articles' do
 end
 
 RSpec.feature 'Creating Articles' do
+  before do
+    @john = User.create!(email: 'john@example.com', password: 'password')
+    login_as(@john)
+  end
+
   scenario 'A user creates a new article' do
     visit '/'
 
@@ -47,6 +54,7 @@ RSpec.feature 'Creating Articles' do
 
     expect(page).to have_content('Article has been created')
     expect(page.current_path).to eq(articles_path)
+    expect(page).to have_content("Created by: #{@john.email}")
   end
 
   scenario 'A user fails to create a new article' do
@@ -66,7 +74,10 @@ end
 
 RSpec.feature 'Editing articles' do
   before do
-    @article = Article.create(title: 'The first article', body: 'Body of the first article')
+    @john = User.create!(email: 'john@example.com', password: 'password')
+    login_as(@john)
+
+    @article = Article.create(title: 'The first article', body: 'Body of the first article', user: @john)
   end
 
   scenario 'A user edits an article' do
@@ -100,7 +111,10 @@ end
 
 RSpec.feature 'Deleting articles' do
   before do
-    @article = Article.create(title: 'The first article', body: 'Body of the first article')
+    @john = User.create!(email: 'john@example.com', password: 'password')
+    login_as(@john)
+
+    @article = Article.create(title: 'The first article', body: 'Body of the first article', user: @john)
   end
 
   scenario 'A user deletes an article' do
